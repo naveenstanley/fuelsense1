@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#122A1A">
+<title>FuelSense — Glen Fuels</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --hero:#122A1A;--hero-t:#E8EDE9;--hero-m:#8FA898;--hero-d:#5C7A65;--hero-glow:rgba(232,173,88,.1);
+  --glen:#1B6B3A;
+  --bg:#FDFAF5;--bg-w:#F7F1E8;
+  --card:#FFF;--card-sh:0 1px 2px rgba(60,40,10,.03),0 6px 24px rgba(60,40,10,.05);--card-bd:rgba(60,40,10,.06);
+  --acc:#D4622B;--acc-h:#C05420;--acc-s:rgba(212,98,43,.06);--acc-g:rgba(212,98,43,.18);
+  --grn:#2D8F5E;--grn-bg:#EAF5EF;--grn-bd:rgba(45,143,94,.18);
+  --amb:#E8AD58;
+  --red:#C0392B;
+  --blu:#3B6FC2;--blu-bg:#ECF1FA;--blu-bd:rgba(59,111,194,.16);
+  --t:#1E1408;--tb:#44382A;--tm:#7A6D5E;--td:#A99E90;--w:#FFF;
+  --ov:rgba(18,42,26,.55);
+  --fd:'Playfair Display',Georgia,serif;--fb:'DM Sans',system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--t);font-family:var(--fb);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.app{max-width:480px;margin:0 auto}
+
+/* ===== HERO SECTION ===== */
+.hero{
+  background:linear-gradient(180deg,var(--hero) 0%,#0F2215 100%);
+  color:var(--hero-t);padding:calc(env(safe-area-inset-top,12px) + 14px) 20px 32px;
+  position:relative;overflow:hidden;
+}
+.hero::after{
+  content:'';position:absolute;top:42%;left:32%;transform:translate(-50%,-50%);
+  width:320px;height:320px;border-radius:50%;
+  background:radial-gradient(circle,var(--hero-glow) 0%,transparent 55%);pointer-events:none;
+}
+.hero::before{
+  content:'';position:absolute;bottom:-1px;left:0;right:0;height:16px;
+  background:linear-gradient(180deg,transparent,var(--bg));z-index:2;pointer-events:none;
+}
+
+.hero-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;position:relative;z-index:1}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-mark{width:34px;height:34px;border-radius:8px;background:var(--glen);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--hero-t);line-height:1.1;text-align:center;border:1px solid rgba(255,255,255,.1)}
+.logo-text{font-family:var(--fd);font-size:16px;font-weight:500}
+.hero-help{display:flex;gap:6px}
+.hero-help a{padding:7px 12px;border-radius:7px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:var(--hero-t);font-size:12px;font-weight:600;text-decoration:none;transition:background .15s ease}
+.hero-help a:hover{background:rgba(255,255,255,.12)}
+.hero-help a:active{background:rgba(255,255,255,.18);transform:scale(.96)}
+
+.hero-body{display:flex;align-items:center;gap:20px;position:relative;z-index:1}
+
+.ring-wrap{position:relative;width:140px;height:140px;flex-shrink:0}
+.ring-wrap svg{width:140px;height:140px;transform:rotate(-90deg)}
+.ring-track{fill:none;stroke:rgba(255,255,255,.08);stroke-width:10}
+.ring-fill{fill:none;stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset 1.6s cubic-bezier(.4,0,.2,1);filter:drop-shadow(0 0 6px currentColor)}
+.ring-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.ring-pct{font-family:var(--fd);font-size:38px;font-weight:700;line-height:1}
+.ring-pct-sign{font-size:18px;color:var(--hero-m)}
+.ring-litres{font-size:11px;color:var(--hero-d);margin-top:1px}
+
+.hero-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
+.hero-greeting{font-family:var(--fd);font-size:22px;font-weight:600;line-height:1.2}
+.hero-status{display:inline-flex;align-items:center;gap:6px;padding:5px 13px;border-radius:18px;font-size:13px;font-weight:600;border:1px solid;align-self:flex-start}
+.hero-status-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.hero-days{font-size:15px;color:var(--hero-m);line-height:1.4}
+.hero-days strong{color:var(--hero-t);font-weight:700}
+
+/* ===== CONTENT ===== */
+.content{padding:20px 20px 40px;padding-bottom:calc(env(safe-area-inset-bottom,0px) + 40px)}
+
+/* NUDGE */
+.nudge{
+  background:var(--card);border:1px solid var(--card-bd);border-radius:16px;
+  padding:20px;box-shadow:var(--card-sh);margin-bottom:16px;
+  border-left:4px solid var(--acc);position:relative;overflow:hidden;
+  opacity:0;animation:rise .4s ease forwards;animation-delay:.05s;
+}
+.nudge::after{content:'';position:absolute;top:-30px;right:-30px;width:100px;height:100px;border-radius:50%;background:radial-gradient(circle,rgba(212,98,43,.05) 0%,transparent 70%);pointer-events:none}
+.nudge-badge{display:inline-flex;padding:4px 10px;border-radius:14px;background:var(--grn-bg);border:1px solid var(--grn-bd);color:var(--grn);font-size:11px;font-weight:700;margin-bottom:8px}
+.nudge-title{font-family:var(--fd);font-size:20px;font-weight:600;margin-bottom:6px;line-height:1.25}
+.nudge-body{font-size:15px;color:var(--tb);line-height:1.65}
+.nudge-body strong{color:var(--acc);font-weight:700}
+
+/* ORDER BUTTON */
+.order-btn{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  width:100%;padding:16px 20px;margin-bottom:16px;  background:var(--acc);color:var(--w);
+  font-family:var(--fb);font-size:17px;font-weight:700;
+  border-radius:14px;border:none;cursor:pointer;
+  box-shadow:0 4px 20px var(--acc-g);
+  transition:all .15s ease;
+  opacity:0;animation:rise .4s ease forwards;animation-delay:.1s;
+  -webkit-tap-highlight-color:transparent;
+}
+.order-btn:hover{background:var(--acc-h);transform:translateY(-1px);box-shadow:0 6px 28px var(--acc-g)}
+.order-btn:active{transform:scale(.97);background:var(--acc-h)}
+
+/* QUICK STATS */
+.stats{display:flex;gap:10px;margin-bottom:16px;opacity:0;animation:rise .4s ease forwards;animation-delay:.15s}
+.stat{flex:1;min-width:0;background:var(--card);border:1px solid var(--card-bd);border-radius:10px;padding:14px 12px;box-shadow:0 1px 6px rgba(60,40,10,.04)}
+.stat-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--td);margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stat-val{font-family:var(--fd);font-size:21px;font-weight:700;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stat-sub{font-size:11px;color:var(--tm);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* PREDICTOR */
+.predict{
+  background:var(--card);border:1px solid var(--card-bd);border-radius:16px;
+  padding:20px;box-shadow:var(--card-sh);margin-bottom:16px;
+  border-left:4px solid var(--blu);
+  opacity:0;animation:rise .4s ease forwards;animation-delay:.2s;
+}
+.predict-top{display:flex;align-items:center;gap:9px;margin-bottom:4px}
+.predict-icon{font-size:20px;flex-shrink:0}
+.predict-title{font-family:var(--fd);font-size:18px;font-weight:600}
+.predict-sub{font-size:14px;color:var(--tm);margin-bottom:14px}
+.step{display:none;animation:rise .25s ease}.step.active{display:block}
+.step-q{font-size:15px;font-weight:700;margin-bottom:10px}
+.step-opts{display:flex;flex-wrap:wrap;gap:8px}
+.step-opt{flex:1 1 calc(50% - 4px);padding:13px 10px;background:var(--bg-w);border:2px solid transparent;border-radius:10px;color:var(--tb);font-family:var(--fb);font-size:15px;font-weight:600;text-align:center;cursor:pointer;transition:all .12s ease;-webkit-tap-highlight-color:transparent}
+.step-opt:hover{border-color:var(--card-bd)}
+.step-opt:active{transform:scale(.97)}
+.step-opt.sel{border-color:var(--blu);background:var(--blu-bg);color:var(--blu)}
+.step-opt .opt-label{display:block;font-size:11px;color:var(--td);margin-top:2px;font-weight:500}
+.step-opt.sel .opt-label{color:var(--blu)}
+.step-nav{display:flex;gap:8px;margin-top:12px}
+.step-btn{flex:1;padding:12px 14px;border-radius:10px;font-family:var(--fb);font-size:14px;font-weight:700;cursor:pointer;border:none;transition:all .12s ease;-webkit-tap-highlight-color:transparent}
+.step-btn.back{background:var(--bg-w);color:var(--tm)}
+.step-btn.next{background:var(--blu);color:var(--w)}
+.step-btn:active{transform:scale(.97)}
+.pred-result{display:none;background:var(--bg-w);border:1px solid var(--card-bd);border-radius:10px;padding:18px;text-align:center;margin-top:12px}
+.pred-result.show{display:block;animation:rise .25s ease}
+.pred-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--td)}
+.pred-value{font-family:var(--fd);font-size:36px;font-weight:700;color:var(--blu);line-height:1.1;margin:3px 0}
+.pred-sub{font-size:13px;color:var(--tb);line-height:1.45}
+.pred-sub strong{color:var(--t)}
+.pred-how{font-size:10px;color:var(--td);margin-top:10px;padding-top:10px;border-top:1px solid var(--card-bd);line-height:1.4}
+.cta{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px 16px;margin-top:10px;background:var(--acc);color:var(--w);font-family:var(--fb);font-size:14px;font-weight:700;border-radius:10px;border:none;cursor:pointer;box-shadow:0 3px 12px var(--acc-g);transition:all .15s ease}
+.cta:hover{background:var(--acc-h);transform:translateY(-1px)}
+.cta.blue{background:var(--blu);box-shadow:0 3px 12px rgba(59,111,194,.15)}
+
+/* SPEND */
+.spend{
+  background:var(--card);border:1px solid var(--card-bd);border-radius:16px;
+  padding:20px;box-shadow:var(--card-sh);margin-bottom:16px;
+  opacity:0;animation:rise .4s ease forwards;animation-delay:.25s;
+}
+.spend-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--td);margin-bottom:10px}
+.spend-total{font-family:var(--fd);font-size:32px;font-weight:700;line-height:1.1}
+.spend-diff{display:inline-flex;align-items:center;gap:4px;margin-top:5px;padding:3px 10px;border-radius:14px;background:var(--grn-bg);color:var(--grn);border:1px solid var(--grn-bd);font-size:12px;font-weight:700}
+.spend-period{font-size:12px;color:var(--td);margin-top:5px;margin-bottom:14px}
+.bars{display:flex;align-items:flex-end;gap:8px;height:75px}
+.bar-g{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.bar-v{font-size:10px;font-weight:700;color:var(--tm)}
+.bar{width:100%;border-radius:5px 5px 2px 2px;background:var(--acc);opacity:.8;min-height:3px;transition:height 1s cubic-bezier(.4,0,.2,1)}
+.bar.nil{background:var(--bg-w);border:1.5px dashed var(--td);opacity:.3;min-height:12px}
+.bar-m{font-size:10px;font-weight:600;color:var(--td)}
+
+/* FOOTER */
+.footer{text-align:center;padding:16px 0;border-top:1px solid var(--card-bd);opacity:0;animation:rise .4s ease forwards;animation-delay:.3s}
+.footer-tag{font-family:var(--fd);font-size:16px;color:var(--tm)}
+.footer-brand{font-size:10px;color:var(--td);margin-top:2px}
+
+/* ===== ORDER MODAL ===== */
+.overlay{position:fixed;inset:0;background:var(--ov);z-index:1000;opacity:0;visibility:hidden;transition:all .3s ease;backdrop-filter:blur(6px)}
+.overlay.on{opacity:1;visibility:visible}
+.panel{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 auto;background:var(--card);border-radius:22px 22px 0 0;z-index:1001;transform:translateY(100%);transition:transform .4s cubic-bezier(.32,.72,0,1);max-height:92vh;overflow-y:auto;border:1px solid var(--card-bd);border-bottom:none}
+.panel.on{transform:translateY(0)}
+.panel-handle{width:32px;height:4px;background:var(--td);border-radius:2px;margin:10px auto 0;opacity:.4}
+.panel-body{padding:18px 22px 30px}
+.panel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.panel-title{font-family:var(--fd);font-size:22px;font-weight:600}
+.panel-x{width:34px;height:34px;border-radius:50%;background:var(--bg-w);border:1px solid var(--card-bd);color:var(--tm);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.fg{margin-bottom:14px}
+.fl{display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--td);margin-bottom:5px}
+.fi{width:100%;padding:11px 14px;background:var(--bg-w);border:1px solid var(--card-bd);border-radius:10px;color:var(--t);font-family:var(--fb);font-size:16px;outline:none}
+.fi:focus{border-color:var(--acc);box-shadow:0 0 0 3px var(--acc-s)}
+.ai-note{display:none;align-items:center;gap:8px;background:var(--blu-bg);border:1px solid var(--blu-bd);border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:12px;font-weight:600;color:var(--blu);line-height:1.4}
+.ai-note.show{display:flex}
+.qty-row{display:flex;gap:7px}
+.qty-opt{flex:1;padding:13px 6px 10px;background:var(--bg-w);border:2px solid transparent;border-radius:10px;color:var(--tm);font-family:var(--fb);font-size:12px;font-weight:600;text-align:center;cursor:pointer;transition:all .12s ease;-webkit-tap-highlight-color:transparent}
+.qty-opt:active{transform:scale(.96)}
+.qty-opt.sel{border-color:var(--acc);background:var(--acc-s);color:var(--acc)}
+.qty-opt .ql{display:block;font-family:var(--fd);font-size:18px;color:var(--t);margin-bottom:0}
+.qty-opt.sel .ql{color:var(--acc)}
+.qty-opt .qr{display:none;font-size:8px;font-weight:700;text-transform:uppercase;color:var(--blu);margin-top:2px}
+.qty-opt.rec .qr{display:block}
+.summary{background:var(--bg-w);border:1px solid var(--card-bd);border-radius:10px;padding:12px;margin-bottom:12px}
+.srow{display:flex;justify-content:space-between;align-items:center;padding:5px 0;font-size:13px}
+.srow+.srow{border-top:1px solid var(--card-bd)}
+.srow-l{color:var(--tm)}.srow-v{font-weight:600}
+.srow.tot .srow-l{font-size:15px;font-weight:700;color:var(--t)}
+.srow.tot .srow-v{font-family:var(--fd);font-size:22px;color:var(--acc)}
+.del-note{display:flex;align-items:center;gap:8px;background:var(--grn-bg);border:1px solid var(--grn-bd);border-radius:10px;padding:10px 12px;margin-bottom:14px;font-size:13px;font-weight:600;color:var(--grn)}
+.ok-state{text-align:center;padding:14px 0}
+.ok-ico{width:68px;height:68px;border-radius:50%;background:var(--grn-bg);border:2px solid var(--grn-bd);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:30px;animation:pop .4s cubic-bezier(.34,1.56,.64,1)}
+.ok-title{font-family:var(--fd);font-size:22px;font-weight:600;margin-bottom:6px}
+.ok-body{font-size:14px;color:var(--tm);line-height:1.55;max-width:280px;margin:0 auto 18px}
+.ok-ref{display:inline-block;background:var(--bg-w);border:1px solid var(--card-bd);border-radius:10px;padding:7px 14px;font-size:12px;color:var(--td);margin-bottom:18px}
+.ok-ref strong{color:var(--t)}
+.ok-btn{display:inline-flex;align-items:center;gap:6px;padding:11px 24px;background:var(--bg-w);border:1px solid var(--card-bd);color:var(--t);font-family:var(--fb);font-size:14px;font-weight:600;border-radius:10px;cursor:pointer;transition:all .12s ease}
+.ok-btn:active{transform:scale(.97);background:var(--card-bd)}
+
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pop{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:1}}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-top">
+      <div class="logo"><div class="logo-mark">Glen<br>Fuels</div><div class="logo-text">FuelSense</div></div>
+      <div class="hero-help"><a href="tel:+35312876911">📞 Call</a><a href="sms:+353851234567">💬 Text</a></div>
+    </div>
+    <div class="hero-body">
+      <div class="ring-wrap">
+        <svg viewBox="0 0 140 140"><circle class="ring-track" cx="70" cy="70" r="58"/><circle class="ring-fill" id="ringFill" cx="70" cy="70" r="58" stroke-dasharray="364.42" stroke-dashoffset="364.42"/></svg>
+        <div class="ring-center"><div class="ring-pct" id="ringPct">0<span class="ring-pct-sign">%</span></div><div class="ring-litres" id="ringLit"></div></div>
+      </div>
+      <div class="hero-info">
+        <div class="hero-greeting" id="heroGreeting">Hi, Margaret</div>
+        <div id="heroStatus"></div>
+        <div class="hero-days" id="heroDays"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <div class="nudge">
+      <div class="nudge-badge">↓ Prices down</div>
+      <div class="nudge-title" id="nudgeTitle"></div>
+      <div class="nudge-body" id="nudgeBody"></div>
+    </div>
+
+    <button class="order-btn" onclick="openOrder(null)">Place an Order →</button>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-label">Oil Price</div><div class="stat-val" id="stP"></div><div class="stat-sub" id="stPSub"></div></div>
+      <div class="stat"><div class="stat-label">Spent</div><div class="stat-val" id="stS"></div><div class="stat-sub" id="stSSub"></div></div>
+      <div class="stat"><div class="stat-label">500L Cost</div><div class="stat-val" id="stC"></div><div class="stat-sub">today's price</div></div>
+    </div>
+
+    <div class="predict">
+      <div class="predict-top"><span class="predict-icon">📐</span><div class="predict-title">Not sure how much?</div></div>
+      <div class="predict-sub">Three quick questions — we'll work it out.</div>
+      <div class="step active" id="step1"><div class="step-q">How big is your house?</div><div class="step-opts"><button class="step-opt" data-v="small" onclick="pick(this,'size')">Small<span class="opt-label">1–2 bed</span></button><button class="step-opt" data-v="medium" onclick="pick(this,'size')">Medium<span class="opt-label">3 bed</span></button><button class="step-opt" data-v="large" onclick="pick(this,'size')">Large<span class="opt-label">4 bed</span></button><button class="step-opt" data-v="xlarge" onclick="pick(this,'size')">Very Large<span class="opt-label">5+ bed</span></button></div><div class="step-nav"><button class="step-btn next" onclick="goStep(2)">Next →</button></div></div>
+      <div class="step" id="step2"><div class="step-q">How much heating do you use?</div><div class="step-opts"><button class="step-opt" data-v="light" onclick="pick(this,'heat')">A little<span class="opt-label">Only when very cold</span></button><button class="step-opt" data-v="moderate" onclick="pick(this,'heat')">Moderate<span class="opt-label">Morning & evening</span></button><button class="step-opt" data-v="heavy" onclick="pick(this,'heat')">A lot<span class="opt-label">On most of the day</span></button></div><div class="step-nav"><button class="step-btn back" onclick="goStep(1)">← Back</button><button class="step-btn next" onclick="goStep(3)">Next →</button></div></div>
+      <div class="step" id="step3"><div class="step-q">How long should it last?</div><div class="step-opts"><button class="step-opt" data-v="30" onclick="pick(this,'dur')">1 month</button><button class="step-opt" data-v="60" onclick="pick(this,'dur')">2 months</button><button class="step-opt" data-v="90" onclick="pick(this,'dur')">3 months</button><button class="step-opt" data-v="120" onclick="pick(this,'dur')">Rest of winter</button></div><div class="step-nav"><button class="step-btn back" onclick="goStep(2)">← Back</button><button class="step-btn next" onclick="calcPred()">Calculate</button></div></div>
+      <div class="pred-result" id="predResult"><div class="pred-label">We recommend</div><div class="pred-value" id="predVal">—</div><div class="pred-sub" id="predSub"></div><div class="pred-how" id="predHow"></div><button class="cta blue" id="predCta" onclick="orderPred()" style="display:none">Order This Amount →</button><button class="step-btn back" style="margin-top:8px;width:100%" onclick="resetPred()">← Start again</button></div>
+    </div>
+
+    <div class="spend">
+      <div class="spend-label">This Winter's Spend</div>
+      <div class="spend-total" id="spendTotal"></div>
+      <div id="spendDiff"></div>
+      <div class="spend-period">Oct 2025 — Feb 2026</div>
+      <div class="bars" id="bars"></div>
+    </div>
+
+    <div class="footer"><div class="footer-tag">Your heating. Sorted.</div><div class="footer-brand">FuelSense by Glen Fuels</div></div>
+  </div>
+</div>
+
+<!-- ORDER MODAL -->
+<div class="overlay" id="ov" onclick="closeOv(event)"></div>
+<div class="panel" id="pn"><div class="panel-handle"></div><div class="panel-body">
+  <div id="oForm">
+    <div class="panel-head"><div class="panel-title">Place Your Order</div><button class="panel-x" onclick="closePanel()">&times;</button></div>
+    <div class="ai-note" id="aiNote"><span style="font-size:14px;flex-shrink:0">📐</span><span id="aiTxt"></span></div>
+    <div class="fg"><label class="fl">Delivery Address</label><input class="fi" value="12 Hillview, Rathnew, Co. Wicklow"></div>
+    <div class="fg"><label class="fl">Eircode</label><input class="fi" value="A67 P2R8" style="max-width:160px"></div>
+    <div class="fg"><label class="fl">How much fuel?</label><div class="qty-row"><button class="qty-opt" data-l="300" onclick="pickQty(this)"><span class="ql">300</span>litres<span class="qr">Suggested</span></button><button class="qty-opt sel" data-l="500" onclick="pickQty(this)"><span class="ql">500</span>litres<span class="qr">Suggested</span></button><button class="qty-opt" data-l="800" onclick="pickQty(this)"><span class="ql">800</span>litres<span class="qr">Suggested</span></button><button class="qty-opt" data-l="1000" onclick="pickQty(this)"><span class="ql">1000</span>litres<span class="qr">Suggested</span></button></div></div>
+    <div class="fg"><label class="fl">Special Instructions (optional)</label><input class="fi" placeholder="e.g. Tank is at the side of the house"></div>
+    <div class="summary"><div class="srow"><span class="srow-l">Quantity</span><span class="srow-v" id="sQ">500 litres</span></div><div class="srow"><span class="srow-l">Price per litre</span><span class="srow-v" id="sP">82.5c</span></div><div class="srow tot"><span class="srow-l">Estimated Total</span><span class="srow-v" id="sT">€412.50</span></div></div>
+    <div class="del-note"><span style="font-size:18px;flex-shrink:0">🚚</span><span id="delTxt"></span></div>
+    <button class="cta" id="cfmBtn" onclick="cfmOrder()">Confirm Order ✓</button>
+  </div>
+  <div id="oOk" style="display:none"><div class="panel-head"><div class="panel-title">Order Placed</div><button class="panel-x" onclick="closePanel()">&times;</button></div><div class="ok-state"><div class="ok-ico">✓</div><div class="ok-title">You're all sorted</div><div class="ok-body">Your order is confirmed. We'll deliver by <strong id="okDate"></strong>. You'll get a text when the driver is on the way.</div><div class="ok-ref">Order ref: <strong id="okRef"></strong></div><br><button class="ok-btn" onclick="closePanel()">Back to Dashboard →</button></div></div>
+</div></div>
+
+<script>
+var C={pct:42,lit:420,cap:1000,days:18},P={cur:82.5,chg:-4.2},S={tot:1240,saved:80,m:[{l:"Oct",a:380},{l:"Nov",a:420},{l:"Dec",a:0},{l:"Jan",a:440},{l:"Feb",a:0}]};
+var BASE=.018,AREA={small:65,medium:105,large:165,xlarge:240},HEAT={light:.7,moderate:1,heavy:1.35},WEATHER={30:1.1,60:1,90:.85,120:.7};
+var sel={size:null,heat:null,dur:null},predLit=null,predDur=null,selLit=500;
+function tankSt(p){if(p>50)return{c:"#3DDBA0",bg:"rgba(61,219,160,.12)",bd:"rgba(61,219,160,.3)",t:"You're all set"};if(p>25)return{c:"#E8AD58",bg:"rgba(232,173,88,.12)",bd:"rgba(232,173,88,.3)",t:"Getting lower"};return{c:"#F06565",bg:"rgba(240,101,101,.12)",bd:"rgba(240,101,101,.3)",t:"Running low"}}
+function r50(n){return Math.ceil(n/50)*50}
+function durLbl(d){return d===30?"1 month":d===60?"2 months":d===90?"3 months":"the rest of winter"}
+function delDate(){var d=new Date(),a=0;while(a<2){d.setDate(d.getDate()+1);if(d.getDay()%6!==0)a++}return["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][d.getDay()]+", "+d.getDate()+" "+["January","February","March","April","May","June","July","August","September","October","November","December"][d.getMonth()]}
+function init(){
+  var p=C.pct,s=tankSt(p),circ=2*Math.PI*58,off=circ-(p/100)*circ;
+  var ring=document.getElementById("ringFill");ring.setAttribute("stroke",s.c);setTimeout(function(){ring.style.strokeDashoffset=off},200);
+  document.getElementById("ringPct").innerHTML=p+'<span class="ring-pct-sign">%</span>';
+  document.getElementById("ringLit").textContent=C.lit+" litres";
+  document.getElementById("heroStatus").innerHTML='<div class="hero-status" style="background:'+s.bg+';color:'+s.c+';border-color:'+s.bd+'"><div class="hero-status-dot" style="background:'+s.c+'"></div>'+s.t+'</div>';
+  document.getElementById("heroDays").innerHTML="<strong>"+C.days+" days</strong> of heating left";
+  document.getElementById("nudgeTitle").textContent="Good time to top up";
+  document.getElementById("nudgeBody").innerHTML="Prices are <strong>down "+Math.abs(P.chg)+"%</strong> this week and cold weather is forecast. With <strong>"+C.days+" days</strong> left, now would be good timing.";
+  document.getElementById("stP").textContent=P.cur.toFixed(1)+"c";
+  document.getElementById("stPSub").textContent="↓"+Math.abs(P.chg)+"%";
+  document.getElementById("stS").textContent="€"+S.tot;
+  document.getElementById("stSSub").textContent="€"+S.saved+" saved";
+  document.getElementById("stC").textContent="€"+(P.cur*5).toFixed(0);
+  document.getElementById("spendTotal").textContent="€"+S.tot.toLocaleString();
+  document.getElementById("spendDiff").innerHTML='<div class="spend-diff">↓ €'+S.saved+' less than last winter</div>';
+  var c=document.getElementById("bars"),mx=Math.max.apply(null,S.m.map(function(m){return m.a}));
+  S.m.forEach(function(m,i){var g=document.createElement("div");g.className="bar-g";var v=document.createElement("div");v.className="bar-v";v.textContent=m.a>0?"€"+m.a:"—";var b=document.createElement("div");b.className="bar"+(m.a===0?" nil":"");var h=m.a>0?Math.max(12,(m.a/mx)*60):12;b.style.height="0px";setTimeout(function(el,ht){return function(){el.style.height=ht+"px"}}(b,h),600+i*120);var l=document.createElement("div");l.className="bar-m";l.textContent=m.l;g.appendChild(v);g.appendChild(b);g.appendChild(l);c.appendChild(g)})
+}
+function pick(el,key){el.parentNode.querySelectorAll('.step-opt').forEach(function(b){b.classList.remove('sel')});el.classList.add('sel');sel[key]=el.getAttribute('data-v')}
+function goStep(n){if(n===2&&!sel.size)return;if(n===3&&!sel.heat)return;document.querySelectorAll('.step').forEach(function(s){s.classList.remove('active')});document.getElementById('step'+n).classList.add('active')}
+function calcPred(){if(!sel.dur)return;var days=parseInt(sel.dur),area=AREA[sel.size]||105,heat=HEAT[sel.heat]||1,weather=WEATHER[days]||1,daily=BASE*area*heat*weather,tot=daily*days,def=tot-C.lit;if(def<0)def=0;var order=r50(def),mx=C.cap-C.lit;if(order>mx)order=r50(mx);predLit=order;predDur=days;document.querySelectorAll('.step').forEach(function(s){s.classList.remove('active')});var res=document.getElementById('predResult');res.classList.add('show');if(order===0){document.getElementById('predVal').textContent="You're covered!";document.getElementById('predVal').style.fontSize="24px";document.getElementById('predSub').innerHTML="Your current <strong>"+C.lit+" litres</strong> should last "+durLbl(days)+".";document.getElementById('predCta').style.display="none"}else{document.getElementById('predVal').textContent=order+" litres";document.getElementById('predVal').style.fontSize="36px";document.getElementById('predSub').innerHTML="Enough for <strong>"+durLbl(days)+"</strong>. Cost: <strong>€"+(order*P.cur/100).toFixed(2)+"</strong>";document.getElementById('predCta').style.display="flex"}document.getElementById('predHow').innerHTML="<strong>How we worked this out:</strong> Based on your house size, heating habits, and seasonal weather patterns. Uses the Heating Degree Day method with SEAI and Met Éireann data."}
+function resetPred(){document.getElementById('predResult').classList.remove('show');sel={size:null,heat:null,dur:null};document.querySelectorAll('.step-opt').forEach(function(b){b.classList.remove('sel')});document.getElementById('step1').classList.add('active')}
+function orderPred(){openOrder(predLit)}
+function openOrder(rec){document.getElementById('ov').classList.add('on');document.getElementById('pn').classList.add('on');document.body.style.overflow='hidden';var opts=document.querySelectorAll('.qty-opt');opts.forEach(function(o){o.classList.remove('sel','rec')});var ai=document.getElementById('aiNote');if(rec&&rec>0){var best=null,bd=Infinity;opts.forEach(function(o){var d=Math.abs(parseInt(o.getAttribute('data-l'))-rec);if(d<bd){bd=d;best=o}});if(best){best.classList.add('sel','rec');selLit=parseInt(best.getAttribute('data-l'))}document.getElementById('aiTxt').textContent="We recommend "+selLit+" litres to last "+durLbl(predDur)+".";ai.classList.add('show')}else{opts.forEach(function(o){if(o.getAttribute('data-l')==='500')o.classList.add('sel')});selLit=500;ai.classList.remove('show')}updSum()}
+function closeOv(e){if(e.target===document.getElementById('ov'))closePanel()}
+function closePanel(){document.getElementById('ov').classList.remove('on');document.getElementById('pn').classList.remove('on');document.body.style.overflow='';setTimeout(function(){document.getElementById('oForm').style.display='';document.getElementById('oOk').style.display='none'},400)}
+function pickQty(el){document.querySelectorAll('.qty-opt').forEach(function(o){o.classList.remove('sel')});el.classList.add('sel');selLit=parseInt(el.getAttribute('data-l'));updSum()}
+function updSum(){document.getElementById('sQ').textContent=selLit+' litres';document.getElementById('sP').textContent=P.cur.toFixed(1)+'c';document.getElementById('sT').textContent='€'+(selLit*P.cur/100).toFixed(2);var d=delDate();document.getElementById('delTxt').textContent='Estimated delivery: '+d;document.getElementById('okDate').textContent=d}
+function cfmOrder(){var btn=document.getElementById('cfmBtn');btn.disabled=true;btn.innerHTML='Processing...';var ref="GF-"+new Date().toISOString().slice(0,10).replace(/-/g,"")+"-"+Math.floor(1000+Math.random()*9000);document.getElementById('okRef').textContent=ref;setTimeout(function(){document.getElementById('oForm').style.display='none';document.getElementById('oOk').style.display='';btn.disabled=false;btn.innerHTML='Confirm Order ✓'},1200)}
+window.addEventListener('DOMContentLoaded',init);
+</script>
+</body>
+</html>
